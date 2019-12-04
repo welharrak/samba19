@@ -11,9 +11,10 @@ echo "hola, aquest es el teu direcotri samba!" > /etc/skel/salutacions
 #creacio home ldap
 for user in user{01..09}
 do
-  mkdir -p /tmp/home/$user
-  cp /etc/skel/.*  /tmp/home/$user/.
-  cp /etc/skel/*  /tmp/home/$user/.
-  chown $user /tmp/home/$user
+  home=$(getent passwd | grep $user | cut -d: -f6)
+  mkdir -p $home
+  cp -ra /etc/skel/.  $home
+  group=$(getent passwd | grep $user | cut -d: -f4)
+  chown -R $user.$group $home
   echo -e "jupiter\njupiter" | smbpasswd -a $user
 done
